@@ -1,0 +1,16 @@
+steps:
+# Build the container image
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', 'asia-northeast1-docker.pkg.dev/${PROJECT_ID}/my-docker-repo/my-image:latest', '.']
+# Push the container image to Container Registry
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['push', 'asia-northeast1-docker.pkg.dev/${PROJECT_ID}/my-docker-repo/my-image']
+# Deploy container image to Cloud Run
+- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  entrypoint: gcloud
+  args: ['beta', 'run', 'deploy', 'my-image', '--image', 'asia-northeast1-docker.pkg.dev/${PROJECT_ID}/my-docker-repo/my-image:latest', '--platform', 'managed','--allow-unauthenticated', '--ingress', 'all', '--region', 'asia-northeast1', '--project', '${PROJECT_ID}', '--quiet']
+
+logsBucket: 'klishimoto-kei'
+serviceAccount: 'projects/${PROJECT_ID}/serviceAccounts/ca-cicd-cloudbuild@${PROJECT_ID}.iam.gserviceaccount.com'
+options:
+  logging: GCS_ONLY
