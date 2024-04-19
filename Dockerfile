@@ -1,10 +1,10 @@
 FROM python:3.8-slim
 
 # 作業ディレクトリの設定
-WORKDIR /srce
+WORKDIR /src
 
 # 依存関係のコピーとインストール
-COPY requirements.txt ./
+COPY /src/requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 
 # アプリケーションのコードをコピー
