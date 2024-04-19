@@ -1,0 +1,5 @@
+secret = "5fbc18204c3c8abf1118207d44ebb0ea"
+token = "QaGrvWn5cA1AzXc09GcvxfyO9js8Fhj6w/MuduzJM9SRRh9q17342+NcCWxBadoMlvYTFTAIJZ2HZxJiETqNQKBBvlc++AYG80H690nrngshNZKj/PEOac5YTuHoovPAm0BTs3eU9gGkNkXUGhz9ggdB04t89/1O/w1cDnyilFU="
+project_id = "ca-sre-bpstudy1-kishimoto-dev"
+location = "global"
+datastore = "sample-data_1705715319128"
