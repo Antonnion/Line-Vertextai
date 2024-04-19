@@ -1,7 +1,7 @@
 FROM python:3.8-slim
 
 # 作業ディレクトリの設定
-WORKDIR /kk-line-bot
+WORKDIR /src
 
 # 依存関係のコピーとインストール
 COPY requirements.txt ./

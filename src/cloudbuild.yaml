@@ -13,4 +13,4 @@ steps:
 logsBucket: 'line-vertexai-cicd'
 serviceAccount: 'projects/${PROJECT_ID}/serviceAccounts/ca-cicd-cloudbuild@${PROJECT_ID}.iam.gserviceaccount.com'
 options:
-  logging: GCS_ONLY
+  logging: CLOUD_LOGGING_ONLY
