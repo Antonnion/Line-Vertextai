@@ -10,7 +10,7 @@ steps:
   entrypoint: gcloud
   args: ['beta', 'run', 'deploy', 'my-image', '--image', 'asia-northeast1-docker.pkg.dev/${PROJECT_ID}/my-docker-repo/my-image:latest', '--platform', 'managed','--allow-unauthenticated', '--ingress', 'all', '--region', 'asia-northeast1', '--project', '${PROJECT_ID}', '--quiet']
 
-logsBucket: 'klishimoto-kei'
+logsBucket: 'line-vertexai-cicd'
 serviceAccount: 'projects/${PROJECT_ID}/serviceAccounts/ca-cicd-cloudbuild@${PROJECT_ID}.iam.gserviceaccount.com'
 options:
   logging: GCS_ONLY
