@@ -72,51 +72,62 @@ def callback():
 
     return 'OK'
 
-# Line request -> Vertex AI -> Line responce
+def reply_with_text(event):
+    client = get_client()
+    bot_response = search_summaries(client, event.message.text)
+    try:
+        line_bot_api.reply_message(event.reply_token, TextSendMessage(text=bot_response))
+    except Exception as e:
+        app.logger.error(f"Error in reply_message: {e}")
+
+def reply_with_carousel(event):
+    columns = [
+        CarouselColumn(
+            thumbnail_image_url="https://example.com/bot/images/item1.jpg",
+            title="this is menu",
+            text="description",
+            actions=[
+                PostbackAction(label="Buy", data="action=buy&itemid=111"),
+                PostbackAction(label="Add to cart", data="action=add&itemid=111"),
+                URIAction(label="View detail", uri="http://example.com/page/111")
+            ]
+        ),
+        CarouselColumn(
+            thumbnail_image_url="https://example.com/bot/images/item2.jpg",
+            title="this is menu",
+            text="description",
+            actions=[
+                PostbackAction(label="Buy", data="action=buy&itemid=222"),
+                PostbackAction(label="Add to cart", data="action=add&itemid=222"),
+                URIAction(label="View detail", uri="http://example.com/page/222")
+            ]
+        ),
+        CarouselColumn(
+            thumbnail_image_url="https://example.com/bot/images/item2.jpg",
+            title="this is menu",
+            text="description",
+            actions=[
+                PostbackAction(label="Buy", data="action=buy&itemid=222"),
+                PostbackAction(label="Add to cart", data="action=add&itemid=222"),
+                URIAction(label="View detail", uri="http://example.com/page/222")
+            ]
+        )
+    ]
+    carousel_template = CarouselTemplate(columns=columns)
+    template_message = TemplateSendMessage(
+        alt_text='Carousel template',
+        template=carousel_template
+    )
+    line_bot_api.reply_message(event.reply_token, template_message)
+
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     user_message = event.message.text
 
-    # 商品を見るというリクエストに対するカルーセル応答
     if user_message == "商品を見る":
-        columns = [
-            CarouselColumn(
-                thumbnail_image_url="https://example.com/bot/images/item1.jpg",
-                title="this is menu",
-                text="description",
-                actions=[
-                    PostbackAction(label="Buy", data="action=buy&itemid=111"),
-                    PostbackAction(label="Add to cart", data="action=add&itemid=111"),
-                    URIAction(label="View detail", uri="http://example.com/page/111")
-                ]
-            ),
-            CarouselColumn(
-                thumbnail_image_url="https://example.com/bot/images/item2.jpg",
-                title="this is menu",
-                text="description",
-                actions=[
-                    PostbackAction(label="Buy", data="action=buy&itemid=222"),
-                    PostbackAction(label="Add to cart", data="action=add&itemid=222"),
-                    URIAction(label="View detail", uri="http://example.com/page/222")
-                ]
-            ),
-            # 追加のカラムなどをここに配置
-        ]
-        carousel_template = CarouselTemplate(columns=columns)
-        template_message = TemplateSendMessage(
-            alt_text='Carousel template',
-            template=carousel_template
-        )
-        line_bot_api.reply_message(event.reply_token, template_message)
-
-    # 他のメッセージに対する標準応答
+        reply_with_carousel(event)
     else:
-        client = get_client()
-        bot_response = search_summaries(client, user_message)
-        try:
-            line_bot_api.reply_message(event.reply_token, TextSendMessage(text=bot_response))
-        except Exception as e:
-            app.logger.error(f"Error in reply_message: {e}")
+        reply_with_text(event)
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 8080))
