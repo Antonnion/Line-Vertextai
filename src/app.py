@@ -97,11 +97,11 @@ def reply_with_carousel(event):
             ]
         ),
         CarouselColumn(
-            thumbnail_image_url="https://example.com/bot/images/item2.jpg",
+            thumbnail_image_url="https://example.com/bot/images/item3.jpg",
             title="契約書",
             actions=[
-                PostbackAction(label="Buy", data="action=buy&itemid=222"),
-                URIAction(label="View detail", uri="http://example.com/page/222")
+                PostbackAction(label="Buy", data="action=buy&itemid=333"),
+                URIAction(label="View detail", uri="http://example.com/page/333")
             ]
         )
     ]
