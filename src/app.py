@@ -1,17 +1,23 @@
 import os
+import config
 import random
 from flask import Flask, request, abort
 from linebot import LineBotApi, WebhookHandler
-from linebot.exceptions import InvalidSignatureError, LineBotApiError
-from linebot.models import (
-    MessageEvent, TextMessage, TextSendMessage, TemplateSendMessage, ConfirmTemplate, MessageAction, PostbackAction
-)
+from linebot.exceptions import InvalidSignatureError
+from linebot.models import MessageEvent, TextMessage, TextSendMessage
+from google.api_core.client_options import ClientOptions
+from google.cloud import discoveryengine
 
 app = Flask(__name__)
 
 # LINE Bot APIとWebhook Handlerの初期化
-line_bot_api = LineBotApi(os.getenv('LINE_CHANNEL_ACCESS_TOKEN'))
-handler = WebhookHandler(os.getenv('LINE_CHANNEL_SECRET'))
+line_bot_api = LineBotApi(config.token)
+handler = WebhookHandler(config.secret)
+
+# Google CloudのプロジェクトID、ロケーション、データストアIDの設定
+PROJECT_ID = config.project_id
+LOCATION = config.location
+DATA_STORE_ID = config.datastore
 
 # 室蘭工業大学の学生の晩ご飯一覧
 bangohan_list = ["SAINO", "章吉", "もっちゃん", "なかよし", "学食", "夕月庵", "チャイナ", "コンビニ", "自炊"]
