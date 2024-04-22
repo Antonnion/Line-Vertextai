@@ -83,6 +83,7 @@ def reply_with_carousel(event):
         CarouselColumn(
             thumbnail_image_url="https://example.com/bot/images/item1.jpg",
             title="シフト",
+            text="",
             actions=[
                 PostbackAction(label="Buy", data="action=buy&itemid=111"),
                 URIAction(label="View detail", uri="http://example.com/page/111")
@@ -91,6 +92,7 @@ def reply_with_carousel(event):
         CarouselColumn(
             thumbnail_image_url="https://example.com/bot/images/item2.jpg",
             title="売り上げ",
+            text="",
             actions=[
                 PostbackAction(label="Buy", data="action=buy&itemid=222"),
                 URIAction(label="View detail", uri="https://akapen-run-d6nkubzq2q-an.a.run.app")
@@ -99,6 +101,7 @@ def reply_with_carousel(event):
         CarouselColumn(
             thumbnail_image_url="https://example.com/bot/images/item3.jpg",
             title="契約書",
+            text="",
             actions=[
                 PostbackAction(label="Buy", data="action=buy&itemid=333"),
                 URIAction(label="View detail", uri="http://example.com/page/333")
@@ -116,7 +119,7 @@ def reply_with_carousel(event):
 def handle_message(event):
     user_message = event.message.text
 
-    if user_message == "商品を見る":
+    if user_message == "おはようございます":
         reply_with_carousel(event)
     else:
         reply_with_text(event)
