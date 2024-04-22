@@ -57,6 +57,8 @@ def search_summaries(client, search_query: str) -> str:
     app.logger.info(f"Full Vertex AI response: {response}")
     return response.summary.summary_text if response.summary else "該当する結果は見つかりませんでした。"
 
+
+
 @app.route("/callback", methods=['POST'])
 def callback():
     signature = request.headers['X-Line-Signature']
@@ -82,31 +84,25 @@ def reply_with_carousel(event):
     columns = [
         CarouselColumn(
             thumbnail_image_url="https://example.com/bot/images/item1.jpg",
-            title="シフト",
-            text="",
+            title="this is menu",
+            text="description",
             actions=[
                 PostbackAction(label="Buy", data="action=buy&itemid=111"),
+                PostbackAction(label="Add to cart", data="action=add&itemid=111"),
                 URIAction(label="View detail", uri="http://example.com/page/111")
             ]
         ),
         CarouselColumn(
             thumbnail_image_url="https://example.com/bot/images/item2.jpg",
-            title="売り上げ",
-            text="",
+            title="this is menu",
+            text="description",
             actions=[
                 PostbackAction(label="Buy", data="action=buy&itemid=222"),
-                URIAction(label="View detail", uri="https://akapen-run-d6nkubzq2q-an.a.run.app")
-            ]
-        ),
-        CarouselColumn(
-            thumbnail_image_url="https://example.com/bot/images/item3.jpg",
-            title="契約書",
-            text="",
-            actions=[
-                PostbackAction(label="Buy", data="action=buy&itemid=333"),
-                URIAction(label="View detail", uri="http://example.com/page/333")
+                PostbackAction(label="Add to cart", data="action=add&itemid=222"),
+                URIAction(label="View detail", uri="http://example.com/page/222")
             ]
         )
+        # 追加のカラムをここに配置することができます
     ]
     carousel_template = CarouselTemplate(columns=columns)
     template_message = TemplateSendMessage(
@@ -119,7 +115,7 @@ def reply_with_carousel(event):
 def handle_message(event):
     user_message = event.message.text
 
-    if user_message == "おはようございます":
+    if user_message == "商品を見る":
         reply_with_carousel(event)
     else:
         reply_with_text(event)
