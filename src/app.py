@@ -57,8 +57,6 @@ def search_summaries(client, search_query: str) -> str:
     app.logger.info(f"Full Vertex AI response: {response}")
     return response.summary.summary_text if response.summary else "該当する結果は見つかりませんでした。"
 
-
-
 @app.route("/callback", methods=['POST'])
 def callback():
     signature = request.headers['X-Line-Signature']
@@ -84,31 +82,25 @@ def reply_with_carousel(event):
     columns = [
         CarouselColumn(
             thumbnail_image_url="https://example.com/bot/images/item1.jpg",
-            title="this is menu",
-            text="description",
+            title="シフト",
             actions=[
                 PostbackAction(label="Buy", data="action=buy&itemid=111"),
-                PostbackAction(label="Add to cart", data="action=add&itemid=111"),
                 URIAction(label="View detail", uri="http://example.com/page/111")
             ]
         ),
         CarouselColumn(
             thumbnail_image_url="https://example.com/bot/images/item2.jpg",
-            title="this is menu",
-            text="description",
+            title="売り上げ",
             actions=[
                 PostbackAction(label="Buy", data="action=buy&itemid=222"),
-                PostbackAction(label="Add to cart", data="action=add&itemid=222"),
-                URIAction(label="View detail", uri="http://example.com/page/222")
+                URIAction(label="View detail", uri="https://akapen-run-d6nkubzq2q-an.a.run.app")
             ]
         ),
         CarouselColumn(
             thumbnail_image_url="https://example.com/bot/images/item2.jpg",
-            title="this is menu",
-            text="description",
+            title="契約書",
             actions=[
                 PostbackAction(label="Buy", data="action=buy&itemid=222"),
-                PostbackAction(label="Add to cart", data="action=add&itemid=222"),
                 URIAction(label="View detail", uri="http://example.com/page/222")
             ]
         )
