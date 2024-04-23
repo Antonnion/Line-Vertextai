@@ -7,7 +7,7 @@ from google.api_core.client_options import ClientOptions
 from google.cloud import discoveryengine
 from linebot.models import (
     MessageEvent, TextMessage, TextSendMessage, TemplateSendMessage,
-    CarouselTemplate, CarouselColumn, URIAction, PostbackAction
+    CarouselTemplate, CarouselColumn, URIAction, PostbackAction, MessageAction
 )
 
 app = Flask(__name__)
@@ -87,8 +87,8 @@ def reply_with_carousel(event):
             title="アルバイト＆パート",
             text="下記の中から選択してください。",
             actions=[
-                PostbackAction(label="シフト", data="action=buy&itemid=111"),
-                PostbackAction(label="アンケート", data="action=add&itemid=111"),
+                MessageAction(label="シフト確認", text="X月Y日/nX月Y日/nX月Y日/n"),
+                MessageAction(label="アンケート開始", text="アンケートを開始します"),
                 URIAction(label="View detail", uri="https://my-service-d6nkubzq2q-uc.a.run.app")
             ]
         ),
@@ -97,8 +97,8 @@ def reply_with_carousel(event):
             title="正社員",
             text="下記の中から選択してください。",
             actions=[
-                PostbackAction(label="シフト", text="hogehoge"),
-                PostbackAction(label="アンケート", data="action=add&itemid=111"),
+                MessageAction(label="シフト確認", text="X月Y日/n"),
+                MessageAction(label="アンケート開始", text="アンケートを開始します"),
                 URIAction(label="View detail", uri="https://my-service-d6nkubzq2q-uc.a.run.app")
             ]
         ),
@@ -107,8 +107,8 @@ def reply_with_carousel(event):
             title="管理者用",
             text="下記の中から選択してください。",
             actions=[
-                PostbackAction(label="売り上げ入力", data="action=buy&itemid=111"),
-                PostbackAction(label="アンケート作成", data="action=add&itemid=111"),
+                MessageAction(label="売り上げ入力", text="月"),
+                MessageAction(label="アンケート作成", text=""),
                 URIAction(label="View detail", uri="https://my-service-d6nkubzq2q-uc.a.run.app")
             ]
         ),
