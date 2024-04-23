@@ -34,22 +34,7 @@ def callback():
         abort(400)
     return 'OK'
 
-def execute_query(sql_query):
-    """BigQueryでSQLクエリを実行し、結果を文字列として返す"""
-    client = bigquery.Client()
-    try:
-        query_job = client.query(sql_query)  # クエリ実行
-        results = query_job.result()  # 結果を待つ
-
-        # 結果を読み取って文字列に整形
-        result_str = ""
-        for row in results:
-            result_str += str(row) + "\n"
-        return "Query successful! Results:\n" + result_str if result_str else "Query successful but no results."
-    except Exception as e:
-        return f"Query failed: {e}"
-
-def reply_with_text(event, user_id, user_message: str) -> str:
+def reply_with_text(user_id, user_message: str) -> str:
     vertexai.init(project="ca-sre-bpstudy1-kishimoto-dev", location="asia-northeast1")
     parameters = {
         "candidate_count": 1,
@@ -82,22 +67,9 @@ def reply_with_text(event, user_id, user_message: str) -> str:
                f"User's prompt: {user_id}, {user_message}",
         **parameters
     )
-    
-    query_result = execute_query(sql_query)
-    line_bot_api.reply_message(
-        event.reply_token,
-        TextSendMessage(text=query_result.text)
-    )
-    # Ensure the response is a string, modify based on your response structure
-    return query_result.text if hasattr(query_result, 'text') else str(query_result)
-
-def reply_with_no_text(event):
     client = bigquery.Client()
-    bot_response = reply_with_text(client, event.message.text)
-    try:
-        line_bot_api.reply_message(event.reply_token, TextSendMessage(text=bot_response))
-    except Exception as e:
-        app.logger.error(f"Error in reply_message: {e}")
+    query_job = client.query(sql_query)
+    results = query_job.result()
 
 def reply_with_carousel(event):
     columns = [
@@ -138,7 +110,7 @@ def handle_message(event):
     if user_message == "おはようございます":
         reply_with_carousel(event)
     else:
-        reply_with_text(event, user_id, user_message)
+        reply_with_text(user_id, user_message)
     
 
 if __name__ == '__main__':
