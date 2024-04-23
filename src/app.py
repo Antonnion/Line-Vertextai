@@ -62,6 +62,49 @@ def search_summaries(client, search_query: str) -> str:
     return response.summary.summary_text if response.summary else "該当する結果は見つかりませんでした。"
 
 
+@handler.add(PostbackEvent)
+def handle_postback(event):
+    data = event.postback.data
+    action_type, _ = data.split('=')
+
+    if action_type == "action=shift_input":
+        # 現在の日時を取得
+        now = datetime.now()
+        current_year = now.year
+        current_month = now.month
+        today = now.day
+
+        # その月の日数と中間日を取得
+        month_days = calendar.monthrange(current_year, current_month)[1]
+        mid_month_day = month_days // 2
+
+        # 日付範囲の初日と終日を決定
+        if today <= mid_month_day:
+            start_day = mid_month_day + 1
+            end_day = month_days
+        else:
+            start_day = 1
+            end_day = 15
+            # 次の月の設定
+            if current_month == 12:
+                current_month = 1
+                current_year += 1
+            else:
+                current_month += 1
+
+        # 日付範囲メッセージの生成
+        date_messages = []
+        for day in range(start_day, end_day + 1):
+            date = datetime(current_year, current_month, day)
+            formatted_date = date.strftime('%m月%d日（%a）00:00 ~ 00:00')
+            date_messages.append(formatted_date)
+        
+        # メッセージを結合して一つのメッセージに
+        full_message = "\n".join(date_messages)
+        line_bot_api.reply_message(
+            event.reply_token,
+            TextSendMessage(text=full_message)
+        )
 
 @app.route("/callback", methods=['POST'])
 def callback():
