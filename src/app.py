@@ -10,6 +10,7 @@ from linebot.models import (
     CarouselTemplate, CarouselColumn, URIAction, PostbackAction, MessageAction, PostbackEvent
 )
 
+
 from datetime import datetime, timedelta
 import calendar
 
@@ -23,7 +24,7 @@ handler = WebhookHandler(config.secret)
 PROJECT_ID = config.project_id
 LOCATION = config.location
 DATA_STORE_ID = config.datastore
-
+now = datetime.now()
 # Google Discovery Engineのクライアントを取得する関数
 def get_client():
     client_options = (
@@ -84,6 +85,9 @@ def reply_with_text(event):
         app.logger.error(f"Error in reply_message: {e}")
 
 def reply_with_carousel(event):
+    initial_date = now.strftime('%Y-%m-%dT%H:%M')
+    min_date = (now - timedelta(days=365)).strftime('%Y-%m-%dT00:00')  # 1年前
+    max_date = (now + timedelta(days=365)).strftime('%Y-%m-%dT23:59')  # 1年後
     columns = [
         CarouselColumn(
             thumbnail_image_url="https://example.com/bot/images/item1.jpg",
@@ -93,10 +97,10 @@ def reply_with_carousel(event):
                 DatetimePickerAction(
                     label="シフト入力",
                     data="action=shift_input&item_id=123",
-                    mode="datetime",  # 'date', 'time', 'datetime' のいずれかを選択
-                    initial=datetime.now().strftime('%Y-%m-%dT%H:%M'),
-                    min="2023-01-01T00:00",
-                    max="2024-01-01T23:59"
+                    mode="datetime",
+                    initial=initial_date,
+                    min=min_date,
+                    max=max_date
                 ),
                 MessageAction(label="アンケート開始", text="アンケートを開始します"),
                 URIAction(label="View detail", uri="https://my-service-d6nkubzq2q-uc.a.run.app")
@@ -130,16 +134,7 @@ def reply_with_carousel(event):
         template=carousel_template
     )
     line_bot_api.reply_message(event.reply_token, template_message)
-@handler.add(PostbackEvent)
-def handle_postback(event):
-    data = event.postback.data
-    params = event.postback.params  # 選択された日時が含まれる
-    if 'action=shift_input' in data:
-        selected_datetime = params['datetime']  # 選択された日時
-        line_bot_api.reply_message(
-            event.reply_token,
-            TextSendMessage(text=f"選択されたシフト日時: {selected_datetime}")
-        )
+
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     user_message = event.message.text
