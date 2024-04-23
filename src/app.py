@@ -84,21 +84,17 @@ def reply_with_carousel(event):
     columns = [
         CarouselColumn(
             thumbnail_image_url="https://example.com/bot/images/item1.jpg",
-            title="this is menu",
             text="description",
             actions=[
-                PostbackAction(label="Buy", data="action=buy&itemid=111"),
+                PostbackAction(label="シフト", data="action=buy&itemid=111"),
                 PostbackAction(label="Add to cart", data="action=add&itemid=111"),
                 URIAction(label="View detail", uri="https://my-service-d6nkubzq2q-uc.a.run.app")
             ]
         ),
         CarouselColumn(
             thumbnail_image_url="https://example.com/bot/images/item2.jpg",
-            title="this is menu",
             text="description",
             actions=[
-                PostbackAction(label="Buy", data="action=buy&itemid=222"),
-                PostbackAction(label="Add to cart", data="action=add&itemid=222"),
                 URIAction(label="View detail", uri="https://my-service-d6nkubzq2q-uc.a.run.app")
             ]
         )
