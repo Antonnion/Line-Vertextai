@@ -84,20 +84,36 @@ def reply_with_carousel(event):
     columns = [
         CarouselColumn(
             thumbnail_image_url="https://example.com/bot/images/item1.jpg",
-            text="description",
+            title="アルバイト＆パート",
+            text="下記の中から選択してください。",
             actions=[
                 PostbackAction(label="シフト", data="action=buy&itemid=111"),
-                PostbackAction(label="Add to cart", data="action=add&itemid=111"),
+                PostbackAction(label="アンケート", data="action=add&itemid=111"),
+                PostbackAction(label="業務関連資料", data="action=add&itemid=111"),
                 URIAction(label="View detail", uri="https://my-service-d6nkubzq2q-uc.a.run.app")
             ]
         ),
         CarouselColumn(
             thumbnail_image_url="https://example.com/bot/images/item2.jpg",
-            text="description",
+            title="正社員",
+            text="下記の中から選択してください。",
             actions=[
+                PostbackAction(label="シフト", data="action=buy&itemid=111"),
+                PostbackAction(label="アンケート", data="action=add&itemid=111"),
+                PostbackAction(label="業務関連資料", data="action=add&itemid=111"),
                 URIAction(label="View detail", uri="https://my-service-d6nkubzq2q-uc.a.run.app")
             ]
-        )
+        ),
+        CarouselColumn(
+            thumbnail_image_url="https://example.com/bot/images/item1.jpg",
+            title="管理者用",
+            text="下記の中から選択してください。",
+            actions=[
+                PostbackAction(label="売り上げ入力", data="action=buy&itemid=111"),
+                PostbackAction(label="アンケート作成", data="action=add&itemid=111"),
+                URIAction(label="View detail", uri="https://my-service-d6nkubzq2q-uc.a.run.app")
+            ]
+        ),
         # 追加のカラムをここに配置することができます
     ]
     carousel_template = CarouselTemplate(columns=columns)
@@ -111,7 +127,7 @@ def reply_with_carousel(event):
 def handle_message(event):
     user_message = event.message.text
 
-    if user_message == "商品を見る":
+    if user_message == "おはようございます":
         reply_with_carousel(event)
     else:
         reply_with_text(event)
