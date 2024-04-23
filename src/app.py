@@ -86,10 +86,10 @@ def reply_with_text(event, user_id, user_message: str) -> str:
     query_result = execute_query(sql_query)
     line_bot_api.reply_message(
         event.reply_token,
-        TextSendMessage(text=query_result)
+        TextSendMessage(text=query_result.text)
     )
     # Ensure the response is a string, modify based on your response structure
-    return sql_query.text if hasattr(sql_query, 'text') else str(sql_query)
+    return query_result.text if hasattr(query_result, 'text') else str(query_result)
 
 def reply_with_no_text(event):
     client = bigquery.Client()
