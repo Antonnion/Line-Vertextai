@@ -99,9 +99,9 @@ def reply_with_carousel(event):
             action=PostbackAction(
                     label="Buy",
                     data="action=buy&itemid=111",
-                    display_text="Buy",
-                    input_option="openKeyboard",
-                    fill_in_text="---\nName: \nPhone: \nBirthday: \n---"
+                    displayText="Buy",
+                    InputOption="openKeyboard",
+                    FillInText="---\nName: \nPhone: \nBirthday: \n---"
                 ),
         )
         
