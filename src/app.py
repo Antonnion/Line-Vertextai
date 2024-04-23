@@ -90,9 +90,21 @@ def reply_with_carousel(event):
             actions=[
                 MessageAction(label="シフト確認", text="月日 00:00 ~ 00:00"),
                 MessageAction(label="アンケート開始", text="アンケートを開始します"),
-                URIAction(label="View detail", uri="https://my-service-d6nkubzq2q-uc.a.run.app")
             ]
         ),
+        CarouselColumn(
+            thumbnail_image_url="https://example.com/bot/images/item1.jpg",
+            title="管理者用",
+            text="下記の中から選択してください。",
+            action=PostbackAction(
+                    label="Buy",
+                    data="action=buy&itemid=111",
+                    display_text="Buy",
+                    input_option="openKeyboard",
+                    fill_in_text="---\nName: \nPhone: \nBirthday: \n---"
+                ),
+        )
+        
         # 追加のカラムをここに配置することができます
     ]
     carousel_template = CarouselTemplate(columns=columns)
