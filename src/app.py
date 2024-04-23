@@ -97,7 +97,7 @@ def reply_with_carousel(event):
             title="正社員",
             text="下記の中から選択してください。",
             actions=[
-                PostbackAction(label="シフト", data="action=buy&itemid=111"),
+                PostbackAction(label="シフト", text="hogehoge"),
                 PostbackAction(label="アンケート", data="action=add&itemid=111"),
                 URIAction(label="View detail", uri="https://my-service-d6nkubzq2q-uc.a.run.app")
             ]
