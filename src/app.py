@@ -6,7 +6,6 @@ from linebot.models import (
     DatetimePickerAction, MessageEvent, TextMessage, TextSendMessage, TemplateSendMessage,
     CarouselTemplate, CarouselColumn, URIAction, PostbackAction, MessageAction
 )
-import re
 from datetime import datetime, timedelta
 import calendar
 from linebot.v3.messaging import MessagingApi
@@ -35,15 +34,30 @@ def callback():
         abort(400)
     return 'OK'
 
-def reply_with_text(search_query: str) -> str:
-    vertexai.init(project="int-booster-llm-poc", location="asia-northeast1")
+def execute_query(sql_query):
+    """BigQueryでSQLクエリを実行し、結果を文字列として返す"""
+    client = bigquery.Client()
+    try:
+        query_job = client.query(sql_query)  # クエリ実行
+        results = query_job.result()  # 結果を待つ
+
+        # 結果を読み取って文字列に整形
+        result_str = ""
+        for row in results:
+            result_str += str(row) + "\n"
+        return "Query successful! Results:\n" + result_str if result_str else "Query successful but no results."
+    except Exception as e:
+        return f"Query failed: {e}"
+
+def reply_with_text(event, user_id, user_message: str) -> str:
+    vertexai.init(project="ca-sre-bpstudy1-kishimoto-dev", location="asia-northeast1")
     parameters = {
         "candidate_count": 1,
         "max_output_tokens": 1024,
         "temperature": 0.9
     }
     model = CodeGenerationModel.from_pretrained("code-bison-32k@002")
-    response = model.predict(
+    sql_query = model.predict(
         prefix=f"You are an experienced data analyst. Write a BigQuery SQL to answer the user's prompt based on the following context:\n"
                "Create and execute the following SQL query based on the information provided by the user.\n"
                "The data to be inserted is based on the information provided by the user. \n"
@@ -65,11 +79,17 @@ def reply_with_text(search_query: str) -> str:
                "        {\"name\": \"end_time\", \"type\": \"TIME\", \"mode\": \"NULLABLE\"}\n"
                "    ]\n"
                "}\n\n"
-               f"User's prompt: {search_query}",
+               f"User's prompt: {user_id}, {user_message}",
         **parameters
     )
+    
+    query_result = execute_query(sql_query)
+    line_bot_api.reply_message(
+        event.reply_token,
+        TextSendMessage(text=query_result)
+    )
     # Ensure the response is a string, modify based on your response structure
-    return response.text if hasattr(response, 'text') else str(response)
+    return sql_query.text if hasattr(sql_query, 'text') else str(sql_query)
 
 def reply_with_no_text(event):
     client = bigquery.Client()
@@ -113,11 +133,13 @@ def reply_with_carousel(event):
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     user_message = event.message.text
+    user_id = event.source.user_id 
 
     if user_message == "おはようございます":
         reply_with_carousel(event)
     else:
-        reply_with_text(event, user_message)
+        reply_with_text(event, user_id, user_message)
+    
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 8080))
