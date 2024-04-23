@@ -10,6 +10,7 @@ from linebot.models import (
     CarouselTemplate, CarouselColumn, URIAction, PostbackAction, MessageAction
 )
 
+
 app = Flask(__name__)
 
 # LINE Bot APIとWebhook Handlerの初期化
@@ -87,7 +88,7 @@ def reply_with_carousel(event):
             title="アルバイト＆パート",
             text="下記の中から選択してください。",
             actions=[
-                MessageAction(label="シフト確認", text="X月Y日/nX月Y日/nX月Y日/n"),
+                MessageAction(label="シフト確認", text="シフトを表示してください"),
                 MessageAction(label="アンケート開始", text="アンケートを開始します"),
                 URIAction(label="View detail", uri="https://my-service-d6nkubzq2q-uc.a.run.app")
             ]
@@ -97,7 +98,7 @@ def reply_with_carousel(event):
             title="正社員",
             text="下記の中から選択してください。",
             actions=[
-                MessageAction(label="シフト確認", text="X月Y日/n"),
+                MessageAction(label="シフト確認", text="シフトを表示してください"),
                 MessageAction(label="アンケート開始", text="アンケートを開始します"),
                 URIAction(label="View detail", uri="https://my-service-d6nkubzq2q-uc.a.run.app")
             ]
@@ -107,8 +108,8 @@ def reply_with_carousel(event):
             title="管理者用",
             text="下記の中から選択してください。",
             actions=[
-                MessageAction(label="売り上げ入力", text="月"),
-                MessageAction(label="アンケート作成", text=""),
+                MessageAction(label="シフト確認", text="シフトを表示してください"),
+                MessageAction(label="アンケート開始", text="アンケートを開始します"),
                 URIAction(label="View detail", uri="https://my-service-d6nkubzq2q-uc.a.run.app")
             ]
         ),
