@@ -89,7 +89,6 @@ def reply_with_carousel(event):
             actions=[
                 PostbackAction(label="シフト", data="action=buy&itemid=111"),
                 PostbackAction(label="アンケート", data="action=add&itemid=111"),
-                PostbackAction(label="業務関連資料", data="action=add&itemid=111"),
                 URIAction(label="View detail", uri="https://my-service-d6nkubzq2q-uc.a.run.app")
             ]
         ),
@@ -100,7 +99,6 @@ def reply_with_carousel(event):
             actions=[
                 PostbackAction(label="シフト", data="action=buy&itemid=111"),
                 PostbackAction(label="アンケート", data="action=add&itemid=111"),
-                PostbackAction(label="業務関連資料", data="action=add&itemid=111"),
                 URIAction(label="View detail", uri="https://my-service-d6nkubzq2q-uc.a.run.app")
             ]
         ),
