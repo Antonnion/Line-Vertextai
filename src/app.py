@@ -89,7 +89,7 @@ def reply_with_carousel(event):
             actions=[
                 PostbackAction(label="Buy", data="action=buy&itemid=111"),
                 PostbackAction(label="Add to cart", data="action=add&itemid=111"),
-                URIAction(label="View detail", uri="http://example.com/page/111")
+                URIAction(label="View detail", uri="https://my-service-d6nkubzq2q-uc.a.run.app")
             ]
         ),
         CarouselColumn(
@@ -99,7 +99,7 @@ def reply_with_carousel(event):
             actions=[
                 PostbackAction(label="Buy", data="action=buy&itemid=222"),
                 PostbackAction(label="Add to cart", data="action=add&itemid=222"),
-                URIAction(label="View detail", uri="http://example.com/page/222")
+                URIAction(label="View detail", uri="https://my-service-d6nkubzq2q-uc.a.run.app")
             ]
         )
         # 追加のカラムをここに配置することができます
