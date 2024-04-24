@@ -5,7 +5,7 @@ from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
 from vertexai.language_models import TextGenerationModel
 from google.api_core.client_options import ClientOptions
-from google.cloud import discoveryengine, bigquery, aiplatform as vertexai, logging
+from google.cloud import discoveryengine, bigquery, aiplatform as vertexai
 from linebot.models import (
     DatetimePickerAction, MessageEvent, TextMessage, TextSendMessage, TemplateSendMessage,
     CarouselTemplate, CarouselColumn, URIAction, PostbackAction, MessageAction, PostbackEvent
@@ -152,7 +152,6 @@ def reply_with_text(event):
 
     # 応答からSQLクエリを取得
     sql_query = response.text.strip() if hasattr(response, 'text') else str(response)
-    logging.info(f"Executing query: {sql_query}")
     # BigQueryクライアントの初期化
     client = bigquery.Client()
 
