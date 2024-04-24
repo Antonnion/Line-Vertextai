@@ -57,7 +57,7 @@ def handle_postback(event):
         event.reply_token,
         TextSendMessage(text=f" {date_time} を送信。")
     )
-    # reply_with_text(event)
+    #reply_with_text(event)
 
 def reply_with_carousel(event):
     initial_date = now.strftime('%Y-%m-%d%H:%M')
@@ -148,12 +148,10 @@ def reply_with_text(event):
                "}\n\n"
                f"User's prompt: {user_id}, {user_message}")
     response = model.predict(prompt, candidate_count=1, max_output_tokens=1024, temperature=0.9)
-    
 
     # 応答からSQLクエリを取得
     sql_query = response.text.strip() if hasattr(response, 'text') else str(response)
-    if sql_query:
-        sql_query = sql_query.replace("```sql", "").replace("```", "").strip()
+
     # BigQueryクライアントの初期化
     client = bigquery.Client()
 
