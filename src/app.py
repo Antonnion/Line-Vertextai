@@ -64,10 +64,11 @@ def reply_with_carousel(event):
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     user_message = event.message.text
-    user_id = event.source.user_id
-
     if user_message == "おはようございます":
         reply_with_carousel(event)
+    else:
+        # 他のテキストメッセージに対する応答がない場合はログに記録するなどの処理を追加
+        app.logger.info(f"Received message: {user_message} - No action taken.")
 
 if __name__ == '__main__':
     port = int(os.getenv('PORT', 8080))
