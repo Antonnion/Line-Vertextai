@@ -151,8 +151,6 @@ def reply_with_text(event):
 
     # 応答からSQLクエリを取得
     sql_query = response.text.strip() if hasattr(response, 'text') else str(response)
-    if sql_query:
-        sql_query = sql_query.replace("```sql", "").replace("```", "").strip()
 
     # BigQueryクライアントの初期化
     client = bigquery.Client()
