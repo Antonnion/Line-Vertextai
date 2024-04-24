@@ -125,15 +125,14 @@ def reply_with_text(event):
     model = TextGenerationModel.from_pretrained("text-bison@002")
     vertexai.init(project="ca-sre-bpstudy1-kishimoto-dev.employee_data.kk", location="asia-northeast1")
     final_response = "Sorry, an error occurred."
-    prompt = (f"You are an experienced data analyst.\n"
+    prompt = (f"You are an experienced data analyst. Write a BigQuery SQL to answer the user's prompt based on the following context:\n"
                "Create and execute the following SQL query based on the information provided by the user.\n"
                "The data to be inserted is based on the information provided by the user. \n"
                "For example, if the user provided shift information for April 12, 2022 from 10:00 am to 5:00 pm with an employee ID of 4, use the following query\n"
                "INSERT INTO `ca-sre-bpstudy1-kishimoto-dev.employee_data.kk`\n"
                "(employee_id, shiftdate, start_time, end_time)\n"
                "VALUES\n"
-               "(4, '2022-04-12', '10:00:00', '15:00:00');\n"
-               "Write a BigQuery SQL to answer the user's prompt based on the following context:\n"
+               "(4, '2022-04-12', '10:00:00', '17:00:00');\n"
                "---- Context ----\n"
                "Format: Plain SQL only, no Markdown\n"
                "Table: ca-sre-bpstudy1-kishimoto-dev.employee_data.kk\n"
@@ -147,7 +146,6 @@ def reply_with_text(event):
                "        {\"name\": \"end_time\", \"type\": \"TIME\", \"mode\": \"NULLABLE\"}\n"
                "    ]\n"
                "}\n\n"
-               "Note: Please output the end time as the start time plus 5 hours like the example.\n"
                f"User's prompt: {user_id}, {user_message}")
     response = model.predict(prompt, candidate_count=1, max_output_tokens=1024, temperature=0.9)
 
