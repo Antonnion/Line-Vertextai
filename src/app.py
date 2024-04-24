@@ -1,29 +1,20 @@
 import os
 import config
 from flask import Flask, request, abort
-
-# Import v3 classes for LINE Bot API
-from linebot.v3.messaging import MessagingApi
-from linebot.v3.webhook import WebhookHandler
-
+from linebot import LineBotApi, WebhookHandler
 from linebot.models import (
     DatetimePickerAction, MessageEvent, TextMessage, TextSendMessage, TemplateSendMessage,
     CarouselTemplate, CarouselColumn, URIAction, PostbackAction, MessageAction
 )
-
 from datetime import datetime, timedelta
 import calendar
-
-# Import Google Cloud services
+from linebot.v3.messaging import MessagingApi
+from linebot.exceptions import InvalidSignatureError
+from linebot.models import MessageEvent, TextMessage, TextSendMessage
 from google.cloud import bigquery
-
-# Import Vertex AI services
 from google.cloud import aiplatform as vertexai
 from vertexai.language_models import CodeGenerationModel
 from vertexai.language_models import TextGenerationModel
-
-# ... rest of your code ...
-
 
 app = Flask(__name__)
 
@@ -113,22 +104,6 @@ def reply_with_carousel(event):
             actions=[
                 MessageAction(label="シフト確認", text="月日 00:00 ~ 00:00"),
                 PostbackAction(
-                        label="Buy",
-                        data="action=buy&itemid=111",
-                        displayText="Buy",
-                        InputOption="openKeyboard",
-                        FillInText="---\nName: \nPhone: \nBirthday: \n---"
-                    ),
-                URIAction(label="View detail", uri="https://my-service-d6nkubzq2q-uc.a.run.app")
-            ]
-        ),
-        CarouselColumn(
-            thumbnail_image_url="https://example.com/bot/images/item1.jpg",
-            title="管理者用",
-            text="下記の中から選択してください。",
-            actions=[
-                MessageAction(label="シフト確認", text="月日 00:00 ~ 00:00"),
-                PostbackAction(
                     label="Buy",
                     data="action=buy&itemid=111",
                     displayText="Buy",
@@ -138,7 +113,6 @@ def reply_with_carousel(event):
                 URIAction(label="View detail", uri="https://my-service-d6nkubzq2q-uc.a.run.app")
             ]
         )
-        
         # 追加のカラムをここに配置することができます
     ]
     carousel_template = CarouselTemplate(columns=columns)
@@ -159,7 +133,7 @@ def handle_message(event):
         reply_with_text(user_id, user_message)
         line_bot_api.reply_message(
             event.reply_token,
-            [TextSendMessage(text=response)]
+            TextSendMessage(text=response)
         )
     
 
