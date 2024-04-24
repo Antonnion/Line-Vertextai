@@ -131,10 +131,11 @@ def handle_message(event):
         reply_with_carousel(event)
     else:
         reply_with_text(user_id, user_message)
-        line_bot_api.reply_message(
-            event.reply_token,
-            TextSendMessage(text=response)
-        )
+        try:
+            line_bot_api.reply_message(event.reply_token, template_message)
+        except Exception as e:
+            app.logger.error(f"Failed to send carousel message: {str(e)}")
+
     
 
 if __name__ == '__main__':
