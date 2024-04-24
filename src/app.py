@@ -79,9 +79,14 @@ def reply_with_text(user_id, user_message: str) -> str:
                f"User's prompt: {user_id}, {user_message}",
         **parameters
     )
-    client = bigquery.Client()
-    query_job = client.query(sql_query)
-    results = query_job.result()
+    try:
+        client = bigquery.Client()
+        query_job = client.query(sql_query.text)
+        results = query_job.result()
+        output = "\n".join(str(row) for row in results)
+        return output if output else "No results found."
+    except Exception as e:
+        return f"Failed to execute the query: {e}"
 
 def reply_with_carousel(event):
     columns = [
@@ -154,7 +159,7 @@ def handle_message(event):
         reply_with_text(user_id, user_message)
         line_bot_api.reply_message(
             event.reply_token,
-            TextSendMessage(text=response)
+            [TextSendMessage(text=response)]
         )
     
 
