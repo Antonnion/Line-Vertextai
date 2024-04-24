@@ -111,10 +111,10 @@ def reply_with_carousel(event):
             title="正社員",
             text="下記の中から選択してください。",
             actions=[
-                PostbackAction(label="シフト入力", data="action=shift_input"),
+                PostbackAction(label="シフト入力", data="action=shift_input&item_id=123"),
                 PostbackAction(
                     label="Buy",
-                    data="action=buy&itemid=111",
+                    data="action=shift_input&item_id=123",
                     displayText="Buy",
                     inputOption="openKeyboard",
                     fillInText="---\nName: \nPhone: \nBirthday: \n---"
