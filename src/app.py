@@ -124,7 +124,7 @@ def handle_message(event):
     if user_message == "おはようございます":
         reply_with_carousel(event)
     else:
-        reply_with_text(user_message)
+        reply_with_text(event)
 
 def reply_with_text(event):
     user_message = event.message.text
