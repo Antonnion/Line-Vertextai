@@ -32,6 +32,9 @@ def callback():
         handler.handle(body, signature)
     except InvalidSignatureError:
         abort(400)
+    except Exception as e:
+        app.logger.error(f"Exception: {str(e)}")  # 例外の詳細をログに記録
+        abort(500)
     return 'OK'
 
 def reply_with_text(user_id, user_message: str) -> str:
