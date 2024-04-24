@@ -86,14 +86,6 @@ def reply_with_carousel(event):
             title="アルバイト＆パート",
             text="下記の中から選択してください。",
             actions=[
-                MessageAction(label="シフト確認", text="月日 00:00 ~ 00:00"),
-                PostbackAction(
-                        label="Buy",
-                        data="action=buy&itemid=111",
-                        displayText="Buy",
-                        InputOption="openKeyboard",
-                        FillInText="---\nName: \nPhone: \nBirthday: \n---"
-                    ),
                 URIAction(label="View detail", uri="https://my-service-d6nkubzq2q-uc.a.run.app")
             ]
         ),
@@ -102,14 +94,6 @@ def reply_with_carousel(event):
             title="管理者用",
             text="下記の中から選択してください。",
             actions=[
-                MessageAction(label="シフト確認", text="月日 00:00 ~ 00:00"),
-                PostbackAction(
-                    label="Buy",
-                    data="action=buy&itemid=111",
-                    displayText="Buy",
-                    InputOption="openKeyboard",
-                    FillInText="---\nName: \nPhone: \nBirthday: \n---"
-                ),
                 URIAction(label="View detail", uri="https://my-service-d6nkubzq2q-uc.a.run.app")
             ]
         )
