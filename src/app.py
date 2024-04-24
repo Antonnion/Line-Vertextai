@@ -75,6 +75,16 @@ def callback():
         abort(400)
 
     return 'OK'
+@handler.add(PostbackEvent)
+def handle_postback(event):
+    date_time = event.postback.params['datetime']  # ユーザーが選択した日時
+
+    # ポストバックデータと日時を使って何か処理を行う
+    # 例えばユーザーに選択された日時を確認のメッセージとして送り返す
+    line_bot_api.reply_message(
+        event.reply_token,
+        TextSendMessage(text=f"あなたが選択した日時は {date_time} です。")
+    )
 
 def reply_with_text(event):
     client = get_client()
@@ -111,14 +121,8 @@ def reply_with_carousel(event):
             title="正社員",
             text="下記の中から選択してください。",
             actions=[
-                PostbackAction(label="シフト入力", data="action=shift_input&item_id=123"),
-                PostbackAction(
-                    label="Buy",
-                    data="action=buy&itemid=111",
-                    displayText="Buy",
-                    inputOption="openKeyboard",
-                    fillInText="---\nName: \nPhone: \nBirthday: \n---"
-                ),
+                PostbackAction(label="シフト入力", data="action=shift_input"),
+                MessageAction(label="アンケート開始", text="アンケートを開始します"),
                 URIAction(label="View detail", uri="https://my-service-d6nkubzq2q-uc.a.run.app")
             ]
         ),
