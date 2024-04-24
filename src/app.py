@@ -99,13 +99,15 @@ def reply_with_carousel(event):
             thumbnail_image_url="https://example.com/bot/images/item1.jpg",
             title="管理者用",
             text="下記の中から選択してください。",
-            actions=PostbackAction(
-                    label="Buy",
-                    data="action=buy&itemid=111",
-                    displayText="Buy",
-                    InputOption="openKeyboard",
-                    FillInText="---\nName: \nPhone: \nBirthday: \n---"
-                ),
+            actions=[
+                    PostbackAction(
+                        label="Buy",
+                        data="action=buy&itemid=111",
+                        displayText="Buy",
+                        InputOption="openKeyboard",
+                        FillInText="---\nName: \nPhone: \nBirthday: \n---"
+                    ),
+            ]
         )
         
         # 追加のカラムをここに配置することができます
