@@ -3,8 +3,9 @@ import config
 from flask import Flask, request, abort
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
+from vertexai.language_models import TextGenerationModel
 from google.api_core.client_options import ClientOptions
-from google.cloud import discoveryengine
+from google.cloud import discoveryengine, bigquery, aiplatform as vertexai
 from linebot.models import (
     DatetimePickerAction, MessageEvent, TextMessage, TextSendMessage, TemplateSendMessage,
     CarouselTemplate, CarouselColumn, URIAction, PostbackAction, MessageAction, PostbackEvent
@@ -34,35 +35,6 @@ def get_client():
     )
     return discoveryengine.SearchServiceClient(client_options=client_options)
 
-# 検索要約を取得する関数
-def search_summaries(client, search_query: str) -> str:
-    serving_config = client.serving_config_path(
-        project=PROJECT_ID,
-        location=LOCATION,
-        data_store=DATA_STORE_ID,
-        serving_config="default_config",
-    )
-    request = discoveryengine.SearchRequest(
-        serving_config=serving_config,
-        query=search_query,
-        page_size=3,
-        content_search_spec={
-            "summary_spec": {
-                "summary_result_count": 3,
-                "ignore_non_summary_seeking_query": True,
-                "ignore_adversarial_query": True
-            },
-            "extractive_content_spec": {
-                "max_extractive_answer_count": 1
-            }
-        }
-    )
-    response = client.search(request)
-    app.logger.info(f"Full Vertex AI response: {response}")
-    return response.summary.summary_text if response.summary else "該当する結果は見つかりませんでした。"
-
-
-
 @app.route("/callback", methods=['POST'])
 def callback():
     signature = request.headers['X-Line-Signature']
@@ -83,7 +55,7 @@ def handle_postback(event):
     # 例えばユーザーに選択された日時を確認のメッセージとして送り返す
     line_bot_api.reply_message(
         event.reply_token,
-        TextSendMessage(text=f"あなたが選択した日時は {date_time} です。")
+        TextSendMessage(text=f" {date_time} を送信。")
     )
 
 def reply_with_text(event):
@@ -152,8 +124,52 @@ def handle_message(event):
     if user_message == "おはようございます":
         reply_with_carousel(event)
     else:
-        reply_with_text(event)
+        reply_with_text(user_message)
 
+def reply_with_text(event):
+    user_message = event.message.text
+    user_id = event.source.user_id
+    model = TextGenerationModel.from_pretrained("text-bison@002")
+    vertexai.init(project="ca-sre-bpstudy1-kishimoto-dev.employee_data.kk", location="asia-northeast1")
+    final_response = "Sorry, an error occurred."
+    prompt = (f"You are an experienced data analyst. Write a BigQuery SQL to answer the user's prompt based on the following context:\n"
+               "Create and execute the following SQL query based on the information provided by the user.\n"
+               "The data to be inserted is based on the information provided by the user. \n"
+               "For example, if the user provided shift information for April 12, 2022 from 10:00 am to 5:00 pm with an employee ID of 4, use the following query\n"
+               "INSERT INTO `ca-sre-bpstudy1-kishimoto-dev.employee_data.kk`\n"
+               "(employee_id, shiftdate, start_time, end_time)\n"
+               "VALUES\n"
+               "(4, '2022-04-12', '10:00:00', '17:00:00');\n"
+               "---- Context ----\n"
+               "Format: Plain SQL only, no Markdown\n"
+               "Table: ca-sre-bpstudy1-kishimoto-dev.employee_data.kk\n"
+               "Restriction: None\n"
+               "Schema as JSON:\n"
+               "{\n"
+               "    \"fields\": [\n"
+               "        {\"name\": \"employee_id\", \"type\": \"INTEGER\", \"mode\": \"NULLABLE\"},\n"
+               "        {\"name\": \"stock_quantity\", \"type\": \"DATE\", \"mode\": \"NULLABLE\"},\n"
+               "        {\"name\": \"start_time\", \"type\": \"TIME\", \"mode\": \"NULLABLE\"}\n"
+               "        {\"name\": \"end_time\", \"type\": \"TIME\", \"mode\": \"NULLABLE\"}\n"
+               "    ]\n"
+               "}\n\n"
+               f"User's prompt: {user_id}, {user_message}")
+    response = model.predict(prompt, candidate_count=1, max_output_tokens=1024, temperature=0.9)
+
+    # 応答からSQLクエリを取得
+    sql_query = response.text.strip() if hasattr(response, 'text') else str(response)
+
+    # BigQueryクライアントの初期化
+    client = bigquery.Client()
+
+    try:
+        # SQLクエリを実行
+        query_job = client.query(sql_query)
+        query_job.result()  # 実行結果を待つ
+        return "Insertion to BigQuery was successful."
+    except Exception as e:
+        return f"Failed to execute query: {e}"
+    
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 8080))
     app.run(debug=False, host='0.0.0.0', port=port)
