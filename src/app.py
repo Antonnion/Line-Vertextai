@@ -9,6 +9,10 @@ from linebot.models import (
     DatetimePickerAction, MessageEvent, TextMessage, TextSendMessage, TemplateSendMessage,
     CarouselTemplate, CarouselColumn, URIAction, PostbackAction, MessageAction, PostbackEvent
 )
+from google.cloud import bigquery
+from google.cloud import aiplatform as vertexai
+from vertexai.language_models import CodeGenerationModel
+from vertexai.language_models import TextGenerationModel
 
 
 from datetime import datetime, timedelta
@@ -64,15 +68,54 @@ def search_summaries(client, search_query: str) -> str:
 
 @handler.add(PostbackEvent)
 def handle_postback(event):
+    user_id = event.source.user_id
     data = event.postback.data
     date_time = event.postback.params['datetime']  # ユーザーが選択した日時
 
     # ポストバックデータと日時を使って何か処理を行う
     # 例えばユーザーに選択された日時を確認のメッセージとして送り返す
+    response = reply_with_text(user_id, date_time)
     line_bot_api.reply_message(
         event.reply_token,
-        TextSendMessage(text=f"あなたが選択した日時は {date_time} です。")
+        TextSendMessage(text=response)
     )
+
+    
+def reply_with_text(user_id, date_time: str) -> str:
+    vertexai.init(project="ca-sre-bpstudy1-kishimoto-dev", location="asia-northeast1")
+    parameters = {
+        "candidate_count": 1,
+        "max_output_tokens": 1024,
+        "temperature": 0.9
+    }
+    model = CodeGenerationModel.from_pretrained("code-bison-32k@002")
+    response = model.predict(
+        prefix=f"You are an experienced data analyst. Write a BigQuery SQL to answer the user's prompt based on the following context:\n"
+               "Create and execute the following SQL query based on the information provided by the user.\n"
+               "The data to be inserted is based on the information provided by the user. \n"
+               "For example, if the user provided shift information for April 12, 2022 from 10:00 am to 5:00 pm with an user ID of 4, use the following query\n"
+               "INSERT INTO `ca-sre-bpstudy1-kishimoto-dev.employee_data.kk`\n"
+               "(user_id, shiftdate, start_time, end_time)\n"
+               "VALUES\n"
+               "(4, '2022-04-12', '10:00:00', '17:00:00');\n"
+               "---- Context ----\n"
+               "Format: Plain SQL only, no Markdown\n"
+               "Table: ca-sre-bpstudy1-kishimoto-dev.employee_data.kk\n"
+               "Restriction: None\n"
+               "Schema as JSON:\n"
+               "{\n"
+               "    \"fields\": [\n"
+               "        {\"name\": \"employee_id\", \"type\": \"INTEGER\", \"mode\": \"NULLABLE\"},\n"
+               "        {\"name\": \"stock_quantity\", \"type\": \"DATE\", \"mode\": \"NULLABLE\"},\n"
+               "        {\"name\": \"start_time\", \"type\": \"TIME\", \"mode\": \"NULLABLE\"}\n"
+               "        {\"name\": \"end_time\", \"type\": \"TIME\", \"mode\": \"NULLABLE\"}\n"
+               "    ]\n"
+               "}\n\n"
+               f"User's prompt: {user_id}, {date_time}",
+        **parameters
+    )
+    # Ensure the response is a string, modify based on your response structure
+    return response.text if hasattr(response, 'text') else str(response)
 
 
 @app.route("/callback", methods=['POST'])
