@@ -112,7 +112,13 @@ def reply_with_carousel(event):
             text="下記の中から選択してください。",
             actions=[
                 PostbackAction(label="シフト入力", data="action=shift_input"),
-                MessageAction(label="アンケート開始", text="アンケートを開始します"),
+                PostbackAction(
+                    label="Buy",
+                    data="action=buy&itemid=111",
+                    displayText="Buy",
+                    inputOption="openKeyboard",
+                    fillInText="---\nName: \nPhone: \nBirthday: \n---"
+                ),
                 URIAction(label="View detail", uri="https://my-service-d6nkubzq2q-uc.a.run.app")
             ]
         ),
