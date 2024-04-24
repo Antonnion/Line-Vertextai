@@ -125,7 +125,7 @@ def reply_with_text(event):
     model = TextGenerationModel.from_pretrained("text-bison@002")
     vertexai.init(project="ca-sre-bpstudy1-kishimoto-dev.employee_data.kk", location="asia-northeast1")
     final_response = "Sorry, an error occurred."
-    prompt = (f"You are an experienced data analyst. Write a BigQuery SQL to answer the user's prompt based on the following context:\n"
+    prompt = (f"You are an experienced data analyst.\n"
                "Create and execute the following SQL query based on the information provided by the user.\n"
                "The data to be inserted is based on the information provided by the user. \n"
                "For example, if the user provided shift information for April 12, 2022 from 10:00 am to 5:00 pm with an employee ID of 4, use the following query\n"
@@ -133,6 +133,7 @@ def reply_with_text(event):
                "(employee_id, shiftdate, start_time, end_time)\n"
                "VALUES\n"
                "(4, '2022-04-12', '10:00:00', '17:00:00');\n"
+               "Write a BigQuery SQL to answer the user's prompt based on the following context:\n"
                "---- Context ----\n"
                "Format: Plain SQL only, no Markdown\n"
                "Table: ca-sre-bpstudy1-kishimoto-dev.employee_data.kk\n"
