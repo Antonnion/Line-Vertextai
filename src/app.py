@@ -60,9 +60,9 @@ def handle_postback(event):
     # reply_with_text(event)
 
 def reply_with_carousel(event):
-    initial_date = now.strftime('%Y-%m-%dT%H:%M')
-    min_date = (now - timedelta(days=365)).strftime('%Y-%m-%dT00:00')  # 1年前
-    max_date = (now + timedelta(days=365)).strftime('%Y-%m-%dT23:59')  # 1年後
+    initial_date = now.strftime('%Y-%m-%d%H:%M')
+    min_date = (now - timedelta(days=365)).strftime('%Y-%m-%d00:00')  # 1年前
+    max_date = (now + timedelta(days=365)).strftime('%Y-%m-%d23:59')  # 1年後
     columns = [
         CarouselColumn(
             thumbnail_image_url="https://example.com/bot/images/item1.jpg",
