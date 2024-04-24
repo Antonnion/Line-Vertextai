@@ -62,6 +62,18 @@ def search_summaries(client, search_query: str) -> str:
     return response.summary.summary_text if response.summary else "該当する結果は見つかりませんでした。"
 
 
+@handler.add(PostbackEvent)
+def handle_postback(event):
+    data = event.postback.data
+    date_time = event.postback.params['datetime']  # ユーザーが選択した日時
+
+    # ポストバックデータと日時を使って何か処理を行う
+    # 例えばユーザーに選択された日時を確認のメッセージとして送り返す
+    line_bot_api.reply_message(
+        event.reply_token,
+        TextSendMessage(text=f"あなたが選択した日時は {date_time} です。")
+    )
+
 
 @app.route("/callback", methods=['POST'])
 def callback():
