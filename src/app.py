@@ -28,7 +28,7 @@ from vertexai.language_models import TextGenerationModel
 app = Flask(__name__)
 
 # LINE Bot APIとWebhook Handlerの初期化
-line_bot_api = LineBotApi(config.token)
+line_bot_api = MessagingApi(config.token)
 handler = WebhookHandler(config.secret)
 
 
