@@ -57,14 +57,7 @@ def handle_postback(event):
         event.reply_token,
         TextSendMessage(text=f" {date_time} を送信。")
     )
-
-def reply_with_text(event):
-    client = get_client()
-    bot_response = search_summaries(client, event.message.text)
-    try:
-        line_bot_api.reply_message(event.reply_token, TextSendMessage(text=bot_response))
-    except Exception as e:
-        app.logger.error(f"Error in reply_message: {e}")
+    # reply_with_text(event)
 
 def reply_with_carousel(event):
     initial_date = now.strftime('%Y-%m-%dT%H:%M')
